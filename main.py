@@ -6,11 +6,6 @@ from Role import Role, RoleDictType
 from User import User, UserDictType
 
 
-
-# TODO: add tests
-# TODO: either state that there's an extra entry in the adj lists for parent of the root
-
-
 if __name__ == '__main__':
 
     user_input = os.getcwd() + '/users.json'
@@ -25,6 +20,7 @@ if __name__ == '__main__':
         roles: List[Role] = [Role(role) for role in roles_json]
 
     hierarchy = EmployeeHierarchy(users, roles)
+
     print(hierarchy.get_subordinates(1))
 
 
