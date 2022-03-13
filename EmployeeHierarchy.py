@@ -37,6 +37,18 @@ class EmployeeHierarchy:
             self.roles_to_users[user.role].append(user.user_id)
 
     def get_subordinates(self, user_id: int) -> List[UserDictType]:
+        """Get all subordinate employees of another, by role.
+
+        This code traverses the roles tree by its adjacency list, finds
+        all child nodes of the role that the user with id user_id has and
+        looks up all matched users to those roles. The return type is
+        List[UserDictType] because the spec has provided examples using
+        the JSON object. In reality, we'd really want this guy to return
+        type List[User] instead.
+
+        :param user_id: The employee to return subordinates from.
+        :return: List of employees.
+        """
 
         if user_id not in self.users:
             raise ValueError(f"User with id: {user_id} does not exist.")
