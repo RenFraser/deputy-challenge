@@ -5,6 +5,47 @@ from User import User, UserDictType
 
 
 class EmployeeHierarchy:
+    """Hierarchy of employees by their roles.
+
+    This class implements a tree of roles. In the provided spec, we have
+    a few classes, some of which are 'Systems Administrator',
+    'Location Manager' and 'Supervisor' where each preceding role is a parent of
+    the next. Therefore, the tree would look like this:
+
+    Systems Administrator
+            |
+      Location Manager
+            |
+        Supervisor
+
+    If we were to add another child of Location Manager, such as Tech Lead,
+    the tree would look like this:
+
+            Systems Administrator
+                    |
+              Location Manager
+                    |
+                ---- ----
+               |         |
+         Supervisor    Tech Lead
+
+    This is represented in the *roles_adjacency_list*, which would be:
+    {
+        Systems Administrator: [Location Manager],
+        Location Manager: [Supervisor, Tech Lead]
+    }
+
+    In the code, each role is represented by its unique (see the assumptions
+    and design decisions sections of the readme) ID for simplicity.
+
+    For fast lookups, I've mapped role IDs to a list of users that are of that
+    role, and I've also mapped each user and role (*users* and *roles*) by
+    using a Python dictionary of their IDs to their respective classes.
+
+    This allows me to efficiently traverse the tree in a depth-first-search
+    manner.
+
+    """
     def __init__(self, users: List[User], roles: List[Role]):
         self.users: Dict[int, User] = {user.user_id: user for user in users}
         self.roles: Dict[int, Role] = {role.role_id: role for role in roles}
@@ -43,8 +84,10 @@ class EmployeeHierarchy:
         all child nodes of the role that the user with id user_id has and
         looks up all matched users to those roles. The return type is
         List[UserDictType] because the spec has provided examples using
-        the JSON object. In reality, we'd really want this guy to return
-        type List[User] instead.
+        the JSON object. In reality, we'd really want this guy to have a return
+        type of List[User] instead. I'd considered returning the List[User] type
+        and later transforming them to type List[UserDictType] (same as the
+        input) but felt it was cruft at this point.
 
         :param user_id: The employee to return subordinates from.
         :return: List of employees.
@@ -65,12 +108,17 @@ class EmployeeHierarchy:
             stack.append(role_id)
 
         while stack:
+
+            # pop the current tree node off the stack and push any children
             current_role_id = stack.pop()
             for role_id in self.roles_adjacency_list.get(current_role_id, []):
                 stack.append(role_id)
 
             role_ids.append(current_role_id)
 
+        # match user ids to the returned roles children, get the corresponding
+        # User() classes and transform them to a dict to match the input type
+        # from the spec.
         for role_id in role_ids:
             users_with_matching_role_id: List[int] = self.roles_to_users[role_id]
 

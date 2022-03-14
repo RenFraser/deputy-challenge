@@ -69,7 +69,12 @@ def roles():
     ]
 
 
-def test_EmployeeHierarchy__get_subs_1(users: List[User], roles: List[Role]):
+# In a production codebase we'd want these names to better reflect the tests
+# whilst remaining consistent. We'd likely also want to parameterise this test
+# case and include data inputs with bad values, mismatched data inputs and
+# various other potential use cases, not just the happy paths. I would not want
+# to test the internals, just the public-facing API of the class.
+def test_EmployeeHierarchy__get_subordinates_1(users: List[User], roles: List[Role]):
     hierarchy = EmployeeHierarchy(users, roles)
     assert hierarchy.get_subordinates(1) == [
         {"Id": 4, "Name": "Mary Manager", "Role": 2},
@@ -79,7 +84,7 @@ def test_EmployeeHierarchy__get_subs_1(users: List[User], roles: List[Role]):
     ]
 
 
-def test_EmployeeHierarchy__get_subs_2(users: List[User], roles: List[Role]):
+def test_EmployeeHierarchy__get_subordinates_2(users: List[User], roles: List[Role]):
     hierarchy = EmployeeHierarchy(users, roles)
     assert hierarchy.get_subordinates(3) == [
         {"Id": 5, "Name": "Steve Trainer", "Role": 5},
