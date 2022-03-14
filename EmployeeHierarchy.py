@@ -9,7 +9,7 @@ class EmployeeHierarchy:
 
     This class implements a tree of roles. In the provided spec, we have
     a few classes, some of which are 'Systems Administrator',
-    'Location Manager' and 'Supervisor' where each preceding role is a parent of
+    'Location Manager' and 'Supervisor', where each preceding role is a parent of
     the next. Therefore, the tree would look like this:
 
     Systems Administrator
@@ -88,9 +88,6 @@ class EmployeeHierarchy:
         type of List[User] instead. I'd considered returning the List[User] type
         and later transforming them to type List[UserDictType] (same as the
         input) but felt it was cruft at this point.
-
-        :param user_id: The employee to return subordinates from.
-        :return: List of employees.
         """
 
         if user_id not in self.users:
